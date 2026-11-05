@@ -1,5 +1,12 @@
-/* 공통 색상과 글꼴을 지정합니다. */
-:root { color-scheme: light; font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "맑은 고딕", sans-serif; color: #172c36; background: #f5f7fa; -webkit-font-smoothing: antialiased; }
+/* 서울남산체 웹폰트를 불러오고 내려받는 동안 시스템 한글 글꼴을 사용합니다. */
+@font-face {
+  font-family: "서울남산체";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+:root { color-scheme: light; font-family: "서울남산체", "Apple SD Gothic Neo", "맑은 고딕", sans-serif; color: #172c36; background: #f5f7fa; -webkit-font-smoothing: antialiased; }
 * { box-sizing: border-box; }
 body { margin: 0; }
 button, select { font: inherit; }
@@ -10,42 +17,51 @@ button, select { font: inherit; }
 h1 { margin: 0; font-size: clamp(26px, 4vw, 38px); letter-spacing: -1.5px; }
 .region-control { display: grid; gap: 8px; min-width: 170px; }
 label { font-size: 13px; font-weight: 700; }
-select, button { border: 1px solid #b9cbd0; border-radius: 10px; background: white; color: #172c36; min-height: 46px; padding: 10px 14px; cursor: pointer; }
+select, button { border: 1px solid #b9cbd0; border-radius: 10px; background: white; color: #172c36; min-height: 46px; padding: 10px 14px; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease; }
 button:disabled { cursor: wait; opacity: .6; }
-button:hover:not(:disabled) { background: #eaf1f3; }
+button:hover:not(:disabled), select:hover { border-color: #536f7b; box-shadow: 0 4px 12px #172c3614; }
 :focus-visible { outline: 3px solid #1264b0; outline-offset: 4px; }
 
 /* 신호등 이모지, 대표 상태와 평균을 가장 먼저 크게 보여줍니다. */
-.summary { margin: 30px 0 36px; padding: 36px; background: var(--tint); border: 1px solid var(--border); border-radius: 26px; color: #172c36; }
-.summary > p:first-child { margin: 0; color: #435a64; font-size: 15px; font-weight: 700; }
-.summary-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px; margin: 26px 0 22px; }
-.signal-line { display: flex; align-items: center; gap: 18px; min-width: 0; }
-#signal-emoji { font-size: clamp(46px, 7vw, 76px); line-height: 1.2; flex-shrink: 0; }
-#signal-state { color: var(--accent); font-size: clamp(42px, 6vw, 72px); line-height: 1.2; letter-spacing: -3px; overflow-wrap: anywhere; }
-.summary.is-loading #signal-state { font-size: clamp(26px, 4vw, 42px); letter-spacing: -1.5px; }
+.summary { margin: 24px 0 28px; padding: 24px 28px; background: var(--tint); border: 1px solid var(--border); border-left: 6px solid var(--signal); border-radius: 20px; color: #172c36; }
+.summary > p:first-child { margin: 0; color: #435a64; font-size: 14px; font-weight: 700; }
+.summary-main { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px; margin: 16px 0 12px; }
+.signal-line { display: flex; align-items: center; gap: 14px; min-width: 0; }
+#signal-emoji { font-size: clamp(38px, 5vw, 52px); line-height: 1.2; flex-shrink: 0; }
+#signal-state { color: var(--accent); font-size: clamp(32px, 4.5vw, 48px); line-height: 1.2; letter-spacing: -2px; overflow-wrap: anywhere; }
+.summary.is-loading #signal-state { font-size: clamp(24px, 3vw, 32px); letter-spacing: -1px; }
 .average-block { min-width: 0; }
 .average-label { color: #435a64; font-size: 13px; }
 .average-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-#average { font-size: clamp(42px, 7vw, 82px); line-height: 1.1; letter-spacing: -3px; font-variant-numeric: tabular-nums; }
-#average-unit { color: #526571; font-size: 18px; }
-.air-advice { margin: 0; font-size: clamp(16px, 2vw, 20px); font-weight: 600; line-height: 1.7; word-break: keep-all; }
-.summary-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 18px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+#average { font-size: clamp(36px, 5vw, 52px); line-height: 1.1; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+#average-unit { color: #526571; font-size: 16px; }
+.air-advice { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.6; word-break: keep-all; }
+.summary-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 18px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
 #average-note, #summary-time { margin: 0; color: #526571; font-size: 12px; line-height: 1.8; }
 h2 { margin: 0; font-size: 20px; letter-spacing: -.5px; }
-.legend { display: flex; flex-wrap: wrap; gap: 10px 18px; list-style: none; padding: 0; margin: 20px 0; }
-.legend li { display: flex; align-items: center; gap: 7px; color: #435a64; font-size: 13px; }
-.legend li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+/* 색상 버튼에 선택 상태와 측정소 개수를 함께 표시합니다. */
+.legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 10px; }
+.grade-filter { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 9px 13px; border: 1px solid var(--border); border-radius: 24px; color: var(--accent); background: white; font-size: 14px; font-weight: 700; }
+.grade-filter::before { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--signal); flex-shrink: 0; }
+.grade-filter[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 3px 10px var(--shadow); }
+.grade-filter[aria-pressed="true"]::before { background: white; }
+.grade-filter:focus-visible { outline-color: var(--signal); }
+.filter-count { min-width: 21px; padding: 2px 6px; border-radius: 12px; background: #172c360b; font-size: 12px; font-variant-numeric: tabular-nums; }
+.grade-filter[aria-pressed="true"] .filter-count { background: #ffffff30; }
+.filter-help { margin: 0 0 14px; color: #526571; font-size: 12px; line-height: 1.7; }
 .status { color: #435a64; line-height: 1.7; overflow-wrap: anywhere; }
 .status.error { color: #b02929; }
+.status.is-empty { padding: 22px; text-align: center; border: 1px dashed #b9cbd0; border-radius: 14px; background: white; }
 
 /* API 등급을 카드의 배경과 테두리 색상에 적용합니다. */
-.grade-1 { --accent: #1768b1; --tint: #eff6ff; --border: #c9dcf4; }
-.grade-2 { --accent: #247044; --tint: #f0f8f2; --border: #c8e2cf; }
-.grade-3 { --accent: #a74706; --tint: #fff5eb; --border: #f0d6b9; }
-.grade-4 { --accent: #b62e36; --tint: #fff1f2; --border: #efcbd0; }
-.grade-unknown { --accent: #606975; --tint: #f0f2f5; --border: #d6dce3; }
+.grade-all { --accent: #253b50; --signal: #253b50; --border: #c4d1dd; --shadow: #253b5026; }
+.grade-1 { --accent: #0755ca; --signal: #0866ff; --tint: #eaf2ff; --border: #a4c5ff; --shadow: #0866ff24; }
+.grade-2 { --accent: #087439; --signal: #00a84f; --tint: #e9f8ef; --border: #8dd9af; --shadow: #00a84f24; }
+.grade-3 { --accent: #b14800; --signal: #ff8300; --tint: #fff1e1; --border: #ffc17a; --shadow: #ff830029; }
+.grade-4 { --accent: #cc1830; --signal: #f4213e; --tint: #ffecef; --border: #ff9ead; --shadow: #f4213e24; }
+.grade-unknown { --accent: #606975; --signal: #83909e; --tint: #f0f2f5; --border: #c5cdd7; --shadow: #60697520; }
 .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-.station-card { min-width: 0; padding: 22px; border-radius: 16px; border: 1px solid var(--border); border-top: 3px solid var(--accent); background: var(--tint); }
+.station-card { min-width: 0; padding: 22px; border-radius: 16px; border: 1px solid var(--border); border-top: 4px solid var(--signal); background: var(--tint); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
 .card-heading { align-items: flex-start; gap: 8px; }
 h3 { margin: 0; font-size: 18px; overflow-wrap: anywhere; }
 .badge { flex-shrink: 0; padding: 5px 8px; border: 1px solid var(--border); background: #ffffffa6; border-radius: 20px; color: var(--accent); font-size: 12px; font-weight: 700; }
@@ -60,7 +76,7 @@ footer a { color: inherit; text-underline-offset: 3px; }
 /* 태블릿은 두 열, 휴대폰은 한 열로 배치합니다. */
 @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) {
-  .summary-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .summary-main { grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .average-block { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px 18px; }
 }
 @media (max-width: 600px) {
@@ -68,12 +84,27 @@ footer a { color: inherit; text-underline-offset: 3px; }
   .topbar { align-items: stretch; flex-direction: column; gap: 24px; }
   .region-control { min-width: 0; }
   select { width: 100%; }
-  .summary { padding: 24px 20px; margin: 24px 0 28px; border-radius: 20px; }
+  .summary { padding: 20px 18px; margin: 20px 0 24px; border-radius: 18px; }
   .signal-line { gap: 12px; }
-  #signal-emoji { font-size: 48px; }
-  #signal-state { font-size: clamp(36px, 9vw, 54px); letter-spacing: -2px; }
-  #average { font-size: 56px; }
+  #signal-emoji { font-size: 38px; }
+  #signal-state { font-size: clamp(30px, 8vw, 40px); letter-spacing: -1px; }
+  #average { font-size: 40px; }
   .card-grid { grid-template-columns: minmax(0, 1fr); }
   h2 { font-size: 17px; }
   .section-heading button { flex-shrink: 0; }
+}
+
+/* 마우스가 있는 기기에서는 카드와 버튼을 살짝 띄워 반응을 보여줍니다. */
+@media (hover: hover) and (pointer: fine) {
+  .station-card:hover { transform: translateY(-5px); border-color: var(--signal); box-shadow: 0 12px 24px var(--shadow); }
+  .grade-filter:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--signal); background: var(--tint, #edf2f7); box-shadow: 0 5px 12px var(--shadow); }
+  .grade-filter[aria-pressed="true"]:hover:not(:disabled) { background: var(--accent); }
+  #refresh:hover:not(:disabled) { transform: translateY(-2px); background: #edf2f7; }
+  footer a:hover { color: #0755ca; }
+}
+
+/* 움직임 줄이기 설정을 사용하는 기기에서는 이동 효과를 생략합니다. */
+@media (prefers-reduced-motion: reduce) {
+  .station-card, button, select { transition: none; }
+  .station-card:hover, .grade-filter:hover:not(:disabled), #refresh:hover:not(:disabled) { transform: none; }
 }

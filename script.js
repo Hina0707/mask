@@ -12,6 +12,27 @@ const signals = {
   "4": { emoji: "🔴", advice: "가급적 실내에서 지내고, 꼭 외출할 때는 마스크를 챙기세요." }
 };
 let activeController;
+// 전체 측정소는 보관하고 선택한 등급에 맞는 카드만 다시 그립니다.
+let stationItems = [];
+let activeGrade = "all";
+
+// 제공되지 않은 등급은 하나의 회색 등급으로 모읍니다.
+function getStationGrade(item) {
+  const grade = String(item.pm10Grade ?? "").trim();
+  return Object.hasOwn(grades, grade) ? grade : "unknown";
+}
+
+// 버튼의 개수와 눌림 상태를 갱신하며 불러오는 동안에는 선택을 막습니다.
+function updateFilterButtons(loading = false) {
+  const counts = { all: stationItems.length, "1": 0, "2": 0, "3": 0, "4": 0, unknown: 0 };
+  for (const item of stationItems) counts[getStationGrade(item)]++;
+  for (const button of document.querySelectorAll(".grade-filter")) {
+    const grade = button.dataset.grade;
+    button.querySelector(".filter-count").textContent = String(counts[grade]);
+    button.setAttribute("aria-pressed", String(activeGrade === grade));
+    button.disabled = loading;
+  }
+}
 
 // 누락값과 잘못된 값은 제외하고 0을 포함한 유효한 숫자만 반환합니다.
 function toNumber(value) {
@@ -88,20 +109,38 @@ function renderStations(items) {
   $("summary-time").textContent = times.length
     ? `${formatDataTime(times[times.length - 1])}${times.length > 1 ? " · 최신 측정 시각" : ""}`
     : "측정 시각 정보 없음";
+  stationItems = items;
+  updateFilterButtons();
+  renderFilteredStations();
+}
+
+// 등급 선택은 카드 목록에만 적용하고 지역 전체의 대표 상태와 평균은 유지합니다.
+function renderFilteredStations() {
+  const visibleItems = activeGrade === "all"
+    ? stationItems
+    : stationItems.filter((item) => getStationGrade(item) === activeGrade);
   const fragment = document.createDocumentFragment();
-  for (const item of items) {
+  for (const item of visibleItems) {
     const card = $("station-template").content.firstElementChild.cloneNode(true);
-    const grade = String(item.pm10Grade ?? "").trim();
-    const known = Object.hasOwn(grades, grade);
-    card.classList.add(known ? `grade-${grade}` : "grade-unknown");
+    const grade = getStationGrade(item);
+    card.classList.add(`grade-${grade}`);
     card.querySelector("h3").textContent = item.stationName || "이름 없는 측정소";
-    card.querySelector(".badge").textContent = known ? grades[grade] : "등급 없음";
+    card.querySelector(".badge").textContent = grades[grade] || "등급 없음";
     card.querySelector(".pm10").textContent = formatValue(item.pm10Value);
     card.querySelector(".pm25").textContent = formatValue(item.pm25Value);
     card.querySelector(".measured-at").textContent = formatDataTime(item.dataTime);
     fragment.append(card);
   }
   $("stations").replaceChildren(fragment);
+  const label = grades[activeGrade] || "등급 없음";
+  $("status").classList.toggle("is-empty", visibleItems.length === 0);
+  $("status").textContent = stationItems.length === 0
+    ? "이 지역의 측정소 자료가 없습니다."
+    : activeGrade === "all"
+      ? `${$("sido").value} · 전체 ${stationItems.length}개 측정소`
+      : visibleItems.length === 0
+        ? `${label} 등급의 측정소가 없습니다. 다른 등급이나 전체를 선택해 주세요.`
+        : `${$("sido").value} · ${label} ${visibleItems.length}개 / 전체 ${stationItems.length}개 측정소`;
 }
 
 // 지역을 연속 변경하면 이전 요청을 취소해 선택한 지역의 결과만 표시합니다.
@@ -119,7 +158,9 @@ async function loadStations() {
   $("average-note").textContent = "유효한 측정값만 모아 평균을 계산합니다.";
   $("summary-time").textContent = "측정 시각 확인 중";
   $("stations").replaceChildren();
-  $("status").classList.remove("error");
+  stationItems = [];
+  updateFilterButtons(true);
+  $("status").classList.remove("error", "is-empty");
   $("status").textContent = "불러오는 중...";
   $("stations").setAttribute("aria-busy", "true");
   $("refresh").disabled = true;
@@ -129,7 +170,6 @@ async function loadStations() {
     const items = await fetchStations(sidoName, controller.signal);
     if (controller !== activeController) return;
     renderStations(items);
-    $("status").textContent = items.length ? `${sidoName} · ${items.length}개 측정소` : "이 지역의 측정소 자료가 없습니다.";
   } catch (error) {
     if (controller !== activeController) return;
     setSignal("unknown", "조회 실패", "⚪", "공기 상태를 가져오지 못했어요. 새로고침해 주세요.");
@@ -152,6 +192,17 @@ async function loadStations() {
 }
 
 // 처음 접속하거나 시도 선택 및 새로고침을 누르면 자료를 조회합니다.
-$("sido").addEventListener("change", loadStations);
+$("sido").addEventListener("change", () => {
+  activeGrade = "all";
+  loadStations();
+});
 $("refresh").addEventListener("click", loadStations);
+// 기본 버튼이므로 마우스, 터치, 키보드의 엔터와 스페이스로 모두 선택할 수 있습니다.
+for (const button of document.querySelectorAll(".grade-filter")) {
+  button.addEventListener("click", () => {
+    activeGrade = button.dataset.grade;
+    updateFilterButtons();
+    renderFilteredStations();
+  });
+}
 loadStations();

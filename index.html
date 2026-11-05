@@ -58,12 +58,16 @@
         <h2 id="stations-title">측정소별 공기 상태</h2>
         <button id="refresh" type="button">새로고침</button>
       </div>
-      <!-- 색상과 함께 등급 이름도 표시해 상태를 구분합니다. -->
-      <ul class="legend" aria-label="미세먼지 등급 안내">
-        <li class="grade-1">좋음</li><li class="grade-2">보통</li>
-        <li class="grade-3">나쁨</li><li class="grade-4">매우나쁨</li>
-        <li class="grade-unknown">등급 없음</li>
-      </ul>
+      <!-- 등급 버튼을 누르면 같은 등급의 측정소만 표시합니다. -->
+      <div id="grade-filters" class="legend" role="group" aria-label="측정소 등급별 보기">
+        <button type="button" class="grade-filter grade-all" data-grade="all" aria-pressed="true" aria-controls="stations" disabled>전체 <span class="filter-count">0</span></button>
+        <button type="button" class="grade-filter grade-1" data-grade="1" aria-pressed="false" aria-controls="stations" disabled>좋음 <span class="filter-count">0</span></button>
+        <button type="button" class="grade-filter grade-2" data-grade="2" aria-pressed="false" aria-controls="stations" disabled>보통 <span class="filter-count">0</span></button>
+        <button type="button" class="grade-filter grade-3" data-grade="3" aria-pressed="false" aria-controls="stations" disabled>나쁨 <span class="filter-count">0</span></button>
+        <button type="button" class="grade-filter grade-4" data-grade="4" aria-pressed="false" aria-controls="stations" disabled>매우나쁨 <span class="filter-count">0</span></button>
+        <button type="button" class="grade-filter grade-unknown" data-grade="unknown" aria-pressed="false" aria-controls="stations" disabled>등급 없음 <span class="filter-count">0</span></button>
+      </div>
+      <p class="filter-help">등급을 눌러 측정소를 골라 보세요. 위의 평균은 지역 전체 기준입니다.</p>
       <p id="status" class="status" role="status" aria-live="polite">불러오는 중...</p>
       <div id="stations" class="card-grid" aria-busy="false"></div>
     </section>
